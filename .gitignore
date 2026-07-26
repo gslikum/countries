@@ -6,3 +6,7 @@ dist/
 
 # System / OS files
 .DS_Store
+
+# Agent internal files
+.agents/
+
