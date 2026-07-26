@@ -1,0 +1,23 @@
+#!/bin/sh
+DIR="$(cd "$(dirname "$0")" && pwd)"
+export PATH="$DIR:$PATH"
+if [ "$1" = "test" ] || [ "$1" = "run" -a "$2" = "test" ]; then
+  exec "$DIR/node" tests/run_tests.js "$@"
+elif [ "$1" = "run" ]; then
+  CMD="$2"
+  exec "$DIR/node" -e "
+    const fs = require('fs');
+    const cp = require('child_process');
+    if (!fs.existsSync('package.json')) process.exit(0);
+    const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+    const script = pkg.scripts && pkg.scripts['$CMD'];
+    if (script) {
+      cp.execSync(script, { stdio: 'inherit', env: process.env });
+    } else {
+      console.error('No script found for: $CMD');
+      process.exit(1);
+    }
+  "
+else
+  echo "npm wrapper v1.0.0"
+fi

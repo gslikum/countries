@@ -1,0 +1,8 @@
+# Dependencies
+node_modules/
+
+# Production output
+dist/
+
+# System / OS files
+.DS_Store
